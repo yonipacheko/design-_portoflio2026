@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#162322" />
+    <meta name="description" content="Fernando’s product design case study on speeding up order placement for DeFi traders on Lux Network." />
+    <title>Shaving 1.8 seconds off every trade — Fernando</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310232a'/%3E%3Cpath d='M18 17h31v8H27v9h19v8H27v15h-9z' fill='%23dcf775'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./project-02.css?v=4" />
+  </head>
+  <body>
+    <a class="skip-link" href="#lux-main">Skip to content</a>
+    <header class="site-header lux-header" id="top">
+      <div class="header-inner shell">
+        <a class="wordmark" href="./index.html" aria-label="Fernando, back to homepage">Fernando<span class="wordmark-dot">.</span></a>
+        <nav aria-label="Main navigation">
+          <a href="./index.html#work">Work</a>
+          <a href="./index.html#about">About</a>
+          <a href="./index.html#contact">Contact</a>
+        </nav>
+        <a class="header-contact" href="mailto:fer.barrajon2023@gmail.com">Let’s talk</a>
+      </div>
+    </header>
+
+    <main id="lux-main">
+      <section class="lux-hero" aria-labelledby="lux-title">
+        <div class="lux-hero-grid" aria-hidden="true"></div>
+        <div class="shell lux-hero-inner">
+          <div class="lux-breadcrumb"><a href="./index.html#work">Selected work</a><span aria-hidden="true">/</span><span>02 / Lux Network</span></div>
+          <div class="lux-hero-layout">
+            <div>
+              <p class="lux-kicker"><span></span> DeFi / order placement</p>
+              <h1 id="lux-title">Every second <em>counts.</em></h1>
+              <p class="lux-hero-deck">Shaving 1.8 seconds off every trade by redesigning the order placement flow.</p>
+              <p class="lux-hero-summary">I removed non-critical steps and refined transitions for DeFi traders. The shipped flow was <strong>40% faster.</strong></p>
+            </div>
+            <div class="lux-hero-number" aria-label="1.8 seconds saved"><strong>1.8<span>s</span></strong><span>Less time to place an order</span></div>
+          </div>
+          <div class="lux-hero-footer"><span>Project 02 / Lux Network</span><a href="#overview">Explore the project <span aria-hidden="true">↘</span></a></div>
+        </div>
+      </section>
+
+      <nav class="lux-local-nav" aria-label="Case study sections">
+        <div class="shell"><a href="#overview">Overview</a><a href="#iterations">Iterations</a><a href="#solution">Solution</a><a href="#system">Design system</a></div>
+      </nav>
+
+      <section class="lux-section lux-overview" id="overview" aria-labelledby="overview-title">
+        <div class="shell">
+          <div class="lux-section-intro">
+            <span class="lux-label">01 / Overview</span>
+            <div>
+              <h2 id="overview-title">A faster path from decision to trade.</h2>
+              <p>Lux Network is a crypto-native financial infrastructure platform with DeFi tools including a native DEX, orderbook trading, and multi-chain asset management. As it expanded into traditional derivatives markets, order placement needed to serve more demanding traders.</p>
+            </div>
+          </div>
+          <figure class="lux-journey-figure">
+            <img src="./assets/case-02-journey.png" alt="Five screens showing the original order placement flow, including a redundant success screen" width="2967" height="1341" />
+            <figcaption>The original order journey included a success screen traders found redundant.</figcaption>
+          </figure>
+          <div class="lux-problem-row">
+            <div><span class="lux-label">The problem</span><p>Prices could change every 0.3 seconds. The existing flow made order placement slower and frustrated high-frequency traders.</p></div>
+            <div><span class="lux-label">My approach</span><p>I reviewed the entire flow, removed non-critical steps, and refined how screens transitioned into one another.</p></div>
+          </div>
+          <div class="lux-baseline"><span>Starting point</span><strong>4.8s</strong><p>Earlier Lux Network order time.</p></div>
+        </div>
+      </section>
+
+      <section class="lux-section lux-before" aria-labelledby="before-title">
+        <div class="shell lux-media-layout">
+          <div><span class="lux-label">02 / Existing flow</span><h2 id="before-title">Too many moments between intent and action.</h2><p>The status screen alone took about 1.2 seconds. The move from buy or sell to the order card added three transitions.</p></div>
+          <figure class="lux-video-figure">
+            <div class="lux-demo-stage"><video class="lux-mask-before" src="./assets/case-02-before.mp4" autoplay muted loop playsinline controls preload="metadata" aria-label="Animation of the existing order placement flow"></video></div>
+            <figcaption>Existing order placement flow</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="lux-section lux-iterations" id="iterations" aria-labelledby="iterations-title">
+        <div class="shell">
+          <div class="lux-section-intro lux-iteration-head"><span class="lux-label">03 / Iterations</span><div><h2 id="iterations-title">Finding the lightest change that worked.</h2><p>Redesigning the order card across the ecosystem would have been a large technical effort, so I explored ways to improve speed without rebuilding that shared component.</p></div></div>
+          <div class="lux-iteration-grid">
+            <article class="lux-iteration-card">
+              <div class="lux-card-top"><span>01</span><span class="lux-status">Explored</span></div>
+              <div class="lux-card-media lux-card-media-light"><div class="lux-phone-shell"><img src="./assets/case-02-panel.png" alt="Shared order card with buy and sell, order type, quantity, and price controls" width="403" height="853" loading="lazy" /></div></div>
+              <div class="lux-card-copy"><h3>Order card as a new panel</h3><p>This is the shared order card the concept would change. I explored placing it in a smaller panel, but the card also served asset transfers across the ecosystem, making a redesign a large engineering effort.</p></div>
+            </article>
+            <article class="lux-iteration-card">
+              <div class="lux-card-top"><span>02</span><span class="lux-status">Explored</span></div>
+              <div class="lux-card-media lux-card-media-neutral"><video src="./assets/case-02-iteration.mp4" autoplay muted loop playsinline controls preload="metadata" aria-label="Order flow animation ending on a full-screen buy confirmation"></video></div>
+              <div class="lux-card-copy"><h3>A full-screen confirmation remained</h3><p>This version still ended on a status screen after the buy order. That pause became the next part of the flow to remove.</p></div>
+            </article>
+            <article class="lux-iteration-card lux-selected-card">
+              <div class="lux-card-top"><span>03</span><span class="lux-status lux-status-selected">Selected</span></div>
+              <div class="lux-card-media lux-card-media-dark"><img class="lux-mask-selected" src="./assets/case-02-selected.gif" alt="Selected transition showing the bottom sheet expanding into the full-screen order card" loading="lazy" /></div>
+              <div class="lux-card-copy"><h3>Bottom sheet → order card</h3><p>The selected approach scaled the sheet directly into the full-screen card, removing an extra transition.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="lux-section lux-solution" id="solution" aria-labelledby="solution-title">
+        <div class="shell lux-solution-head"><span class="lux-label">04 / The solution</span><div><h2 id="solution-title">Keep the trader moving.</h2><p>The shipped flow replaced the status screen with a toast and streamlined the move into the order card.</p></div></div>
+        <div class="lux-solution-stage"><div class="shell"><img class="lux-mask-solution" src="./assets/case-02-solution.gif" alt="Animated final order placement flow from trading screen through buy action" loading="lazy" /></div></div>
+        <div class="shell lux-result-row"><div><strong>1.2<span>s</span></strong><span>Saved by removing the status screen</span></div><div><strong>0.6<span>s</span></strong><span>Saved by streamlining transitions</span></div><div><strong>40<span>%</span></strong><span>Faster shipped flow</span></div></div>
+      </section>
+
+      <section class="lux-section lux-decisions" aria-labelledby="decisions-title">
+        <div class="shell">
+          <div class="lux-section-intro"><span class="lux-label">05 / Key decisions</span><div><h2 id="decisions-title">Two changes. One faster flow.</h2></div></div>
+          <div class="lux-decision-list">
+            <article><span class="lux-decision-index">01</span><div><h3>Status screen → status toast</h3><p>The status screen became a toast, so traders landed directly on the positions page after buying. The toast still needed to communicate every state the screen had handled.</p></div><strong>−1.2s</strong></article>
+            <article><span class="lux-decision-index">02</span><div><h3>Three transitions → one</h3><p>The bottom sheet scaled directly into the full-screen order card. We used quick cubic ease-out and ease-in motion to keep the interaction responsive.</p></div><strong>−0.6s</strong></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="lux-section lux-system" id="system" aria-labelledby="system-title">
+        <div class="shell">
+          <div class="lux-section-intro"><span class="lux-label">06 / Shipping to the system</span><div><h2 id="system-title">A reusable status pattern.</h2><p>The status toast was carried into the design system with states, light and dark modes, and placement guidance.</p></div></div>
+          <div class="lux-system-grid"><figure><img src="./assets/case-02-design-system.gif" alt="Animated design system controls showing variations of the status toast" loading="lazy" /><figcaption>Status toast states and controls</figcaption></figure><figure><img src="./assets/case-02-toast-spec.png" alt="Status toast examples in light and dark mode with spacing and placement measurements" width="982" height="996" loading="lazy" /><figcaption>Light and dark mode, measurements, and placement</figcaption></figure></div>
+        </div>
+      </section>
+
+      <section class="lux-next"><div class="shell"><div><span class="lux-label">Continue exploring</span><h2>More selected work.</h2></div><a class="button button-lime" href="./index.html#work">View all projects</a></div></section>
+    </main>
+
+    <footer class="site-footer"><div class="shell footer-inner"><a class="wordmark" href="./index.html">Fernando<span class="wordmark-dot">.</span></a><span>Product design / fintech / what’s next</span><nav aria-label="Footer navigation"><a href="./index.html#work">Work</a><a href="./index.html#about">About</a><a href="./index.html#contact">Contact</a></nav></div></footer>
+  </body>
+</html>

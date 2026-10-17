@@ -147,3 +147,19 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Portfolio: dist contains editable source, not generated build output
+!/dist/
+!/dist/**
+
+# Local metadata, credentials, and archives
+.vercel/
+.openai/
+.env*
+*.pem
+*.key
+*.p12
+*.pfx
+.DS_Store
+._*
+*.zip
