@@ -60,5 +60,15 @@ window.portfolioProjects = [
   "imageAlt": "3D scaffolding concept with contextual placement controls",
   "imageClass": "project-image-six",
   "caseStudyUrl": "./project-06.html"
+},
+{
+  "number": "07",
+  "title": "Plan the shop before it exists.",
+  "category": "3D interaction · Designing stores",
+  "description": "Helping retail operators explore equipment, layout, and circulation before fitting out a shop.",
+  "image": "./assets/case-07-thumbnail.jpg",
+  "imageAlt": "A shop facade transitioning diagonally from an architectural ink drawing into a material 3D model",
+  "imageClass": "project-image-seven",
+  "caseStudyUrl": "./project-07.html"
 }
 ];

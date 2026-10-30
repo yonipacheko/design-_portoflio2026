@@ -1,3 +1,13 @@
+# Kambi case study 07 — local review, 2026-10-29
+
+Released to production on 2026-10-29 with user approval. Deployment dpl_2K7XTn6jP866JMuna4farkPCp8bN, https://fernando-product-design-portfolio-8w9axayzf.vercel.app/. Staged production, verified sixteen uploaded files against local bytes including both MP4s, then promoted the exact deployment to the existing project. Source changes remain uncommitted locally; no GitHub push occurred. Previous deployment for rollback: dpl_EwFGHdgV8tb19e9MV6bMoYYN2Y4S. This release supersedes the local-only status below.
+
+Public demo supplied: https://kambi-retail-planner-demo.vercel.app/. Added an optional “Explore the prototype” link in the Outcome section using the existing button component. Opens a new tab with noopener/noreferrer. This supersedes the pending-URL note below. Local edit only; not deployed.
+
+Added dist/project-07.html, twelve case-07 media assets, and homepage card 07: “Plan the shop before it exists.” The page reuses styles.css and existing project-06.css/project-06.js components. Original six cards and existing stylesheet rules are preserved. Media comprises seven stills, two compressed MP4 clips, their posters, and the homepage thumbnail. Original MOV is preserved outside the repository.
+
+Checks passed: content.js syntax, git diff whitespace, local references/anchors, seventeen HTTP byte checks, and preservation of the existing six cards. Desktop browser review confirmed the shared hero styling and reveal-video playback. Mobile visual review remains outstanding. Local preview: http://127.0.0.1:4173/project-07.html. No commit, push, or deployment was performed for this update. Public interactive-prototype URL remains pending; no localhost demo link is included. Next: review the local page and homepage card before release approval.
+
 # Release preparation — 2026-10-18
 
 The user authorized pushing and deploying the reviewed animation update. Current work is being committed on portfolio-case-study-update and released through the CLI to the existing Vercel project. Git integration remains disconnected. Earlier statements that publishing is not yet authorized are historical and superseded by this instruction. Deployment result will be recorded in the sibling outputs/RELEASE.md after verification. GitHub CLI authentication was invalid at preflight; push status must be verified independently.

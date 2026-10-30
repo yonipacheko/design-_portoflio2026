@@ -192,3 +192,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Kambi: retain the complete ink-to-material composition in the work card. */
+.project-image-seven{background:var(--paper)}
+.project-image-seven img{object-fit:contain}
