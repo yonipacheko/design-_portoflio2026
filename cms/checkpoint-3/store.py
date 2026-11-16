@@ -95,9 +95,21 @@ class Store:
 
     def publish(self, slug, revision):
         with self.connect() as db:
-            result = db.execute('UPDATE versions SET published=draft, revision=revision+1 WHERE slug=? AND revision=?', (slug, revision))
+            result = db.execute("UPDATE versions SET published=draft, status='live', revision=revision+1 WHERE slug=? AND revision=?", (slug, revision))
             if result.rowcount != 1:
                 raise Conflict('The saved draft changed. Reload and review it before publishing.')
+        return self.get(slug)
+
+    def unpublish(self, slug):
+        with self.connect() as db:
+            result = db.execute("UPDATE versions SET status='offline', revision=revision+1 WHERE slug=? AND status='live'", (slug,))
+            if result.rowcount != 1: raise ValueError('This version is not currently live')
+        return self.get(slug)
+
+    def restore(self, slug):
+        with self.connect() as db:
+            result = db.execute("UPDATE versions SET status='live', revision=revision+1 WHERE slug=? AND status='offline'", (slug,))
+            if result.rowcount != 1: raise ValueError('This version is not offline')
         return self.get(slug)
 
     def session(self, user_id):

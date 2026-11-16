@@ -147,6 +147,14 @@ def create_app(database=None, settings=None):
         except (ValueError, KeyError) as e:
             raise HTTPException(400, str(e))
 
+    async def lifecycle(request):
+        mutation(request)
+        try:
+            fn = store.unpublish if request.path_params['action'] == 'unpublish' else store.restore
+            return JSONResponse(fn(request.path_params['slug']))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(400, str(e))
+
     async def change(request):
         mutation(request)
         if request.headers.get('content-type', '').split(';')[0] != 'application/json':
@@ -181,6 +189,8 @@ def create_app(database=None, settings=None):
             record = store.get(request.path_params['slug'])
         except KeyError:
             return HTMLResponse('<h1>This portfolio version is unavailable.</h1><a href="/">View the general portfolio</a>', 404)
+        if not is_preview and record['status'] != 'live':
+            return HTMLResponse('<h1>This portfolio version is unavailable.</h1><a href="/">View the general portfolio</a>', 404)
         content = record['draft' if is_preview else 'published']
         if request.path_params.get('asset') == 'projects.js':
             return Response(rendering.selected_projects(content), media_type='text/javascript')
@@ -197,6 +207,7 @@ def create_app(database=None, settings=None):
               Route('/api/me', me), Route('/api/logout', logout, methods=['POST']),
               Route('/api/versions', versions), Route('/api/versions/duplicate', duplicate, methods=['POST']),
               Route('/api/versions/{slug}/archive', archive, methods=['POST']),
+              Route('/api/versions/{slug}/{action:unpublish|restore}', lifecycle, methods=['POST']),
               Route('/api/versions/{slug}/{action}', change, methods=['POST']),
               Route('/admin/preview/{slug}', version), Route('/admin/preview/{slug}/{asset}', version),
               Mount('/admin/static', app=StaticFiles(directory=ROOT / 'static')),
