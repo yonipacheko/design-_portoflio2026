@@ -1,0 +1,6 @@
+.venv/
+.env
+.session-key
+*.sqlite3
+*.sqlite3-*
+__pycache__/
