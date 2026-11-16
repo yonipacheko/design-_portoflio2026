@@ -108,8 +108,8 @@ class Store:
 
     def restore(self, slug):
         with self.connect() as db:
-            result = db.execute("UPDATE versions SET status='live', revision=revision+1 WHERE slug=? AND status='offline'", (slug,))
-            if result.rowcount != 1: raise ValueError('This version is not offline')
+            result = db.execute("UPDATE versions SET status='live', revision=revision+1 WHERE slug=? AND status IN ('offline','archived')", (slug,))
+            if result.rowcount != 1: raise ValueError('This version is not offline or archived')
         return self.get(slug)
 
     def session(self, user_id):
