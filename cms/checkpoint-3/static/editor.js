@@ -2,6 +2,7 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const slug = new URLSearchParams(location.search).get('slug') || 'fintech';
   let record, draft, projects, csrf, busy = false;
   const message = text => {$('#message').textContent = text;};
   async function api(path, data) {
@@ -32,17 +33,17 @@
   });
   $('#form').addEventListener('submit',async event=>{
     event.preventDefault();if(busy)return;read();if(!draft.project_ids.length){message('Select at least one project.');return;}busy=true;render();
-    try {record=await api('/api/versions/fintech/save',{draft,revision:record.revision});draft=structuredClone(record.draft);message('Draft saved. The locally published page has not changed.');}
+    try {record=await api('/api/versions/'+slug+'/save',{draft,revision:record.revision});draft=structuredClone(record.draft);message('Draft saved. The locally published page has not changed.');}
     catch(error){message(error.message);}finally{busy=false;render();}
   });
   $('#publish').addEventListener('click',async()=>{
     if(busy||dirty()||!record.has_changes)return;
     if(!confirm('Publish this saved draft to the local fintech page? Production will not change.'))return;
     busy=true;render();
-    try {record=await api('/api/versions/fintech/publish',{revision:record.revision});message('Published locally. The same link now shows the saved content; no deployment occurred.');}
+    try {record=await api('/api/versions/'+slug+'/publish',{revision:record.revision});message('Published locally. The same link now shows the saved content; no deployment occurred.');}
     catch(error){message(error.message);}finally{busy=false;render();}
   });
   $('#logout').addEventListener('click',async()=>{try{await api('/api/logout',{});location.href='/admin/login';}catch(error){message(error.message);}});
   window.addEventListener('beforeunload',event=>{if(record&&dirty()){event.preventDefault();event.returnValue='';}});
-  (async()=>{try{const user=await api('/api/me');csrf=user.csrf;$('#account').textContent='Signed in as '+user.login;const data=await api('/api/versions');record=data.versions[0];projects=data.projects;draft=structuredClone(record.draft);for(const key of ['internal_name','slug','headline','intro'])$('#'+key).value=draft[key];$('#form').hidden=false;render();}catch(error){message(error.message);}})();
+  (async()=>{try{const user=await api('/api/me');csrf=user.csrf;$('#account').textContent='Signed in as '+user.login;const data=await api('/api/versions');record=data.versions.find(v=>v.slug===slug);if(!record)throw Error('This version is unavailable.');projects=data.projects;draft=structuredClone(record.draft);for(const key of ['internal_name','slug','headline','intro'])$('#'+key).value=draft[key];$('#preview').href='/admin/preview/'+slug;$('#form').hidden=false;render();}catch(error){message(error.message);}})();
 })();
