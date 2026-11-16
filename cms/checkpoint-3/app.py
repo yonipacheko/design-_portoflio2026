@@ -150,7 +150,7 @@ def create_app(database=None, settings=None):
     async def lifecycle(request):
         mutation(request)
         try:
-            fn = store.unpublish if request.path_params['action'] == 'unpublish' else store.restore
+            fn = store.unpublish if request.url.path.endswith('/unpublish') else store.restore
             return JSONResponse(fn(request.path_params['slug']))
         except (ValueError, KeyError) as e:
             raise HTTPException(400, str(e))
