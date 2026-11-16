@@ -78,6 +78,10 @@ def create_app(database=None, settings=None):
             return RedirectResponse('/admin/login', 303)
         return FileResponse(ROOT / 'static' / 'index.html')
 
+    async def versions_page(request):
+        identity(request)
+        return FileResponse(ROOT / 'static' / 'versions.html')
+
     async def login(request):
         extra = '<a class="primary button" href="/auth/github">Continue with GitHub</a>' if ready else '<p><strong>GitHub setup is pending.</strong> The editor stays locked until the local OAuth application is configured.</p><p>No password or secret should be entered into this page.</p>'
         return HTMLResponse('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Portfolio CMS sign-in</title><link rel="stylesheet" href="/admin/static/style.css"><main><p class="eyebrow">CHECKPOINT 3 · LOCAL ONLY</p><h1>Your portfolio studio.</h1><p>Private editing for yonipacheko. Visitors never need to sign in.</p>' + extra + '<p style="margin-top:24px"><a href="/for/fintech">View the local published version</a></p></main></html>')
@@ -188,7 +192,7 @@ def create_app(database=None, settings=None):
     async def http_error(request, exception):
         return JSONResponse({'error': exception.detail}, status_code=exception.status_code)
 
-    routes = [Route('/admin', home), Route('/admin/', home), Route('/admin/login', login),
+    routes = [Route('/admin', home), Route('/admin/', home), Route('/admin/versions', versions_page), Route('/admin/login', login),
               Route('/auth/github', github), Route('/auth/github/callback', callback),
               Route('/api/me', me), Route('/api/logout', logout, methods=['POST']),
               Route('/api/versions', versions), Route('/api/versions/duplicate', duplicate, methods=['POST']),
