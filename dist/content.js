@@ -52,16 +52,6 @@ window.portfolioProjects = [
     caseStudyUrl: "./project-05.html"
   },
 {
-  "number": "06",
-  "title": "Making scaffold planning easier to see—and easier to act on.",
-  "category": "3D interaction / UX concept",
-  "description": "Exploring contextual controls, precise bay placement, and selection inside a complex 3D scaffolding tool.",
-  "image": "./assets/case-06-07.webp",
-  "imageAlt": "3D scaffolding concept with contextual placement controls",
-  "imageClass": "project-image-six",
-  "caseStudyUrl": "./project-06.html"
-},
-{
   "number": "07",
   "title": "Plan the shop before it exists.",
   "category": "3D interaction · Designing stores",
@@ -70,5 +60,15 @@ window.portfolioProjects = [
   "imageAlt": "A shop facade transitioning diagonally from an architectural ink drawing into a material 3D model",
   "imageClass": "project-image-seven",
   "caseStudyUrl": "./project-07.html"
+},
+{
+  "number": "06",
+  "title": "Making scaffold planning easier to see—and easier to act on.",
+  "category": "3D interaction / UX concept",
+  "description": "Exploring contextual controls, precise bay placement, and selection inside a complex 3D scaffolding tool.",
+  "image": "./assets/case-06-07.webp",
+  "imageAlt": "3D scaffolding concept with contextual placement controls",
+  "imageClass": "project-image-six",
+  "caseStudyUrl": "./project-06.html"
 }
 ];
