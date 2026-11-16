@@ -22,25 +22,57 @@ class Store:
             db.executescript('''
                 CREATE TABLE IF NOT EXISTS versions (
                   slug TEXT PRIMARY KEY, draft TEXT NOT NULL,
-                  published TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 1
+                  published TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 1,
+                  status TEXT NOT NULL DEFAULT 'live'
                 );
                 CREATE TABLE IF NOT EXISTS sessions (
                   sid TEXT PRIMARY KEY, user_id INTEGER NOT NULL,
                   csrf TEXT NOT NULL, expires INTEGER NOT NULL
                 );
             ''')
+            columns = {row[1] for row in db.execute('PRAGMA table_info(versions)')}
+            if 'status' not in columns:
+                db.execute("ALTER TABLE versions ADD COLUMN status TEXT NOT NULL DEFAULT 'live'")
             seed = json.dumps(rendering.SEED)
-            db.execute('INSERT OR IGNORE INTO versions VALUES (?, ?, ?, 1)', ('fintech', seed, seed))
+            db.execute('INSERT OR IGNORE INTO versions(slug,draft,published,revision,status) VALUES (?, ?, ?, 1, ?)', ('fintech', seed, seed, 'live'))
 
     def connect(self):
         return sqlite3.connect(self.path, timeout=10)
 
     def get(self, slug):
         with self.connect() as db:
-            row = db.execute('SELECT draft, published, revision FROM versions WHERE slug=?', (slug,)).fetchone()
+            row = db.execute('SELECT draft, published, revision, status FROM versions WHERE slug=?', (slug,)).fetchone()
         if row is None:
             raise KeyError(slug)
-        return dict(slug=slug, draft=json.loads(row[0]), published=json.loads(row[1]), revision=row[2], has_changes=row[0] != row[1])
+        return dict(slug=slug, draft=json.loads(row[0]), published=json.loads(row[1]), revision=row[2], status=row[3], has_changes=row[0] != row[1])
+
+    def list(self):
+        with self.connect() as db:
+            slugs = [row[0] for row in db.execute('SELECT slug FROM versions ORDER BY slug')]
+        return [self.get(slug) for slug in slugs]
+
+    def duplicate(self, source_slug, new_slug, internal_name):
+        if not isinstance(new_slug, str) or not new_slug.strip() or not new_slug.replace('-', '').isalnum():
+            raise ValueError('Use a short link name with letters, numbers or hyphens')
+        with self.connect() as db:
+            source = db.execute('SELECT draft FROM versions WHERE slug=?', (source_slug,)).fetchone()
+            if source is None or db.execute('SELECT 1 FROM versions WHERE slug=?', (new_slug,)).fetchone():
+                raise ValueError('That version link already exists')
+            draft = json.loads(source[0])
+            draft['slug'] = new_slug
+            draft['internal_name'] = internal_name.strip()[:80]
+            encoded = json.dumps(draft)
+            db.execute('INSERT INTO versions(slug,draft,published,revision,status) VALUES (?, ?, ?, 1, ?)', (new_slug, encoded, encoded, 'draft'))
+        return self.get(new_slug)
+
+    def archive(self, slug):
+        if slug == 'fintech':
+            raise ValueError('The protected baseline cannot be archived')
+        with self.connect() as db:
+            result = db.execute("UPDATE versions SET status='archived', revision=revision+1 WHERE slug=?", (slug,))
+            if result.rowcount != 1:
+                raise KeyError(slug)
+        return self.get(slug)
 
     def save(self, slug, draft, revision):
         if not isinstance(draft, dict) or set(draft) != set(rendering.SEED):

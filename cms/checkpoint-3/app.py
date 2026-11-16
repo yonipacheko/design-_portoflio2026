@@ -125,7 +125,23 @@ def create_app(database=None, settings=None):
 
     async def versions(request):
         identity(request)
-        return JSONResponse({'versions': [store.get('fintech')], 'projects': list(rendering.CATALOG.values())})
+        return JSONResponse({'versions': store.list(), 'projects': list(rendering.CATALOG.values())})
+
+    async def duplicate(request):
+        mutation(request)
+        try:
+            data = await request.json()
+            value = store.duplicate(data['source_slug'], data['slug'], data['internal_name'])
+        except (ValueError, KeyError, TypeError):
+            raise HTTPException(400, 'Choose a unique link and internal name.')
+        return JSONResponse(value, status_code=201)
+
+    async def archive(request):
+        mutation(request)
+        try:
+            return JSONResponse(store.archive(request.path_params['slug']))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(400, str(e))
 
     async def change(request):
         mutation(request)
@@ -175,7 +191,9 @@ def create_app(database=None, settings=None):
     routes = [Route('/admin', home), Route('/admin/', home), Route('/admin/login', login),
               Route('/auth/github', github), Route('/auth/github/callback', callback),
               Route('/api/me', me), Route('/api/logout', logout, methods=['POST']),
-              Route('/api/versions', versions), Route('/api/versions/{slug}/{action}', change, methods=['POST']),
+              Route('/api/versions', versions), Route('/api/versions/duplicate', duplicate, methods=['POST']),
+              Route('/api/versions/{slug}/archive', archive, methods=['POST']),
+              Route('/api/versions/{slug}/{action}', change, methods=['POST']),
               Route('/admin/preview/{slug}', version), Route('/admin/preview/{slug}/{asset}', version),
               Mount('/admin/static', app=StaticFiles(directory=ROOT / 'static')),
               Route('/for/{slug}', version), Route('/for/{slug}/{asset}', version),
