@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
+  const versionsLink = document.createElement('a'); versionsLink.href = '/admin/versions'; versionsLink.textContent = '← All portfolio versions'; versionsLink.style.marginRight = '1rem'; document.querySelector('header > div').prepend(versionsLink);
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const slug = new URLSearchParams(location.search).get('slug') || 'fintech';
   let record, draft, projects, csrf, busy = false;
