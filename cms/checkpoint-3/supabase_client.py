@@ -57,3 +57,14 @@ class SupabaseClient:
     def healthcheck(self):
         self._request('GET', '/rest/v1/portfolio_versions?select=slug&limit=1')
         return True
+
+    def create_session(self, session):
+        rows = self._request('POST', '/rest/v1/cms_sessions', session, {'Prefer': 'return=representation'})
+        return rows[0]
+
+    def get_session(self, sid):
+        rows = self._request('GET', '/rest/v1/cms_sessions?select=*&sid=eq.' + sid)
+        return rows[0] if rows else None
+
+    def delete_session(self, sid):
+        self._request('DELETE', '/rest/v1/cms_sessions?sid=eq.' + sid)

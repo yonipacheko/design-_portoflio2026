@@ -51,3 +51,12 @@ class RemoteVersionStore:
         if status not in {'live', 'offline', 'archived'}:
             raise ValueError('Invalid version status')
         return self._patch(slug, revision, {'status': status})
+
+    def create_session(self, sid, user_id, csrf, expires):
+        return self.client.create_session({'sid': sid, 'user_id': user_id, 'csrf': csrf, 'expires': expires})
+
+    def get_session(self, sid):
+        return self.client.get_session(sid)
+
+    def delete_session(self, sid):
+        self.client.delete_session(sid)
