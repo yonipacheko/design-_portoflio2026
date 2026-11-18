@@ -18,6 +18,7 @@ from starlette.routing import Route, Mount
 from starlette.staticfiles import StaticFiles
 
 from store import Store, Conflict, rendering
+from remote_store import RemoteVersionStore
 
 ROOT = Path(__file__).resolve().parent
 ALLOWED_USER = 3479404  # Public GitHub numeric account ID for yonipacheko.
@@ -38,8 +39,9 @@ def create_app(database=None, settings=None):
     config = settings if settings is not None else Config(str(ROOT / '.env') if (ROOT / '.env').exists() else None)
     get = lambda key, default='': config.get(key, default) if isinstance(config, dict) else config(key, default=default)
     base = get('CMS_BASE_URL', 'http://127.0.0.1:4194').rstrip('/')
-    if urlsplit(base).hostname != '127.0.0.1' or urlsplit(base).scheme != 'http':
-        raise RuntimeError('This checkpoint is restricted to the local preview host.')
+    storage_mode = get('CMS_STORAGE', 'sqlite').lower()
+    if storage_mode not in {'sqlite', 'supabase'}:
+        raise RuntimeError('CMS_STORAGE must be sqlite or supabase')
     secret = get('CMS_SESSION_SECRET')
     if not secret:
         # An ignored, local signing key persists across restarts; never printed.
@@ -49,7 +51,7 @@ def create_app(database=None, settings=None):
                 f.write(secrets.token_urlsafe(48))
             key_file.chmod(0o600)
         secret = key_file.read_text()
-    store = Store(database or ROOT / 'local-content.sqlite3')
+    store = RemoteVersionStore(rendering.SEED) if storage_mode == 'supabase' else Store(database or ROOT / 'local-content.sqlite3')
     oauth = OAuth()
     client_id, client_secret = get('GITHUB_CLIENT_ID'), get('GITHUB_CLIENT_SECRET')
     ready = bool(client_id and client_secret)
@@ -214,8 +216,10 @@ def create_app(database=None, settings=None):
               Mount('/admin/static', app=StaticFiles(directory=ROOT / 'static')),
               Route('/for/{slug}', version), Route('/for/{slug}/{asset}', version),
               Mount('/', app=StaticFiles(directory=rendering.PORTFOLIO, html=True))]
-    middleware = [Middleware(ResponseHeaders), Middleware(TrustedHostMiddleware, allowed_hosts=['127.0.0.1']),
-                  Middleware(SessionMiddleware, secret_key=secret, session_cookie='portfolio_cms', same_site='lax', https_only=False, max_age=3600)]
+    host = urlsplit(base).hostname or '127.0.0.1'
+    allowed_hosts = [host, '127.0.0.1', 'localhost']
+    middleware = [Middleware(ResponseHeaders), Middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts),
+                  Middleware(SessionMiddleware, secret_key=secret, session_cookie='portfolio_cms', same_site='lax', https_only=urlsplit(base).scheme == 'https', max_age=3600)]
     app = Starlette(routes=routes, middleware=middleware, exception_handlers={HTTPException: http_error})
 
     app.state.store, app.state.oauth = store, oauth
