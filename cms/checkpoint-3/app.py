@@ -78,7 +78,11 @@ def create_app(database=None, settings=None):
             identity(request)
         except HTTPException:
             return RedirectResponse('/admin/login', 303)
-        return FileResponse(ROOT / 'static' / 'index.html')
+        html = (ROOT / 'static' / 'index.html').read_text()
+        html = html.replace('Checkpoint 3 · Local only. Publish updates this local version, never the production website.', 'Protected studio editor. Publishing changes the hosted portfolio version, never the main case studies.')
+        html = html.replace('View locally published page ↗', 'View published page ↗')
+        html = html.replace('Saving a draft never changes the locally published page.', 'Saving a draft never changes the published page.')
+        return HTMLResponse(html)
 
     async def versions_page(request):
         identity(request)
@@ -86,7 +90,7 @@ def create_app(database=None, settings=None):
 
     async def login(request):
         extra = '<a class="primary button" href="/auth/github">Continue with GitHub</a>' if ready else '<p><strong>GitHub setup is pending.</strong> The editor stays locked until the local OAuth application is configured.</p><p>No password or secret should be entered into this page.</p>'
-        return HTMLResponse('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Portfolio CMS sign-in</title><link rel="stylesheet" href="/admin/static/style.css"><main><p class="eyebrow">CHECKPOINT 3 · LOCAL ONLY</p><h1>Your portfolio studio.</h1><p>Private editing for yonipacheko. Visitors never need to sign in.</p>' + extra + '<p style="margin-top:24px"><a href="/for/fintech">View the local published version</a></p></main></html>')
+        return HTMLResponse('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Portfolio CMS sign-in</title><link rel="stylesheet" href="/admin/static/style.css"><main><p class="eyebrow">FERNANDO · STUDIO</p><h1>Your portfolio studio.</h1><p>Private editing for yonipacheko. Visitors never need to sign in.</p>' + extra + '<p style="margin-top:24px"><a href="/for/fintech">View the published version</a></p></main></html>')
 
     async def github(request):
         if not ready:
@@ -196,7 +200,7 @@ def create_app(database=None, settings=None):
         content = record['draft' if is_preview else 'published']
         if request.path_params.get('asset') == 'projects.js':
             return Response(rendering.selected_projects(content), media_type='text/javascript')
-        html = rendering.render(content).decode().replace('Checkpoint 2 · Saved local version · Not published', 'Checkpoint 3 · Local ' + ('draft preview' if is_preview else 'published version') + ' · Not on production')
+        html = rendering.render(content).decode().replace('Checkpoint 2 · Saved local version · Not published', 'Fernando Studio · ' + ('draft preview' if is_preview else 'published version'))
         if is_preview:
             html = html.replace('/for/' + content['slug'] + '/projects.js', '/admin/preview/' + content['slug'] + '/projects.js')
         return HTMLResponse(html)
@@ -227,3 +231,4 @@ def create_app(database=None, settings=None):
 
 
 app = create_app()
+
