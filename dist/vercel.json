@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/for/:slug/:path*",
+      "destination": "https://fernando-portfolio-cms.vercel.app/for/:slug/:path*"
+    },
+    {
+      "source": "/for/:slug",
+      "destination": "https://fernando-portfolio-cms.vercel.app/for/:slug"
+    }
+  ]
+}
