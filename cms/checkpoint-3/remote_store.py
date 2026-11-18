@@ -32,3 +32,22 @@ class RemoteVersionStore:
 
     def healthcheck(self):
         return self.client.healthcheck()
+
+    def _patch(self, slug, revision, values):
+        path = '/rest/v1/portfolio_versions?slug=eq.' + slug + '&revision=eq.' + str(revision)
+        rows = self.client._request('PATCH', path, {**values, 'revision': revision + 1}, {'Prefer': 'return=representation'})
+        if not rows:
+            raise SupabaseError('Version changed or no longer exists')
+        return self._record(rows[0])
+
+    def save_draft(self, slug, draft, revision):
+        return self._patch(slug, revision, {'draft': draft})
+
+    def publish(self, slug, revision):
+        current = self.get(slug)
+        return self._patch(slug, revision, {'published': current['draft'], 'status': 'live'})
+
+    def set_status(self, slug, status, revision):
+        if status not in {'live', 'offline', 'archived'}:
+            raise ValueError('Invalid version status')
+        return self._patch(slug, revision, {'status': status})
