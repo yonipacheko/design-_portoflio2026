@@ -28,7 +28,7 @@ exists. GitHub access tokens are discarded after identity verification.
 Session cookies are signed, HttpOnly and SameSite=Lax; only an opaque session
 reference is stored client-side. Sessions expire after an hour and sign-out
 revokes the server-side session. Cookies are HTTP-only for localhost; hosted
-production will require HTTPS/Secure cookies and a durable session/content store.
+production will require HTTPS/Secure cookies and a durable content store.
 Writes require an authenticated owner, a matching CSRF token and exact Origin.
 
 ## Scope
@@ -44,3 +44,5 @@ Multiple versions, duplication and archiving remain checkpoint 4. Real GitHub
 OAuth requires the app registration above; a successful mocked test is not proof
 of a completed real login. Hosted storage/provider selection remains open before
 production. The earlier checkpoint previews remain intact.
+
+Protected preview alias: `https://fernando-portfolio-cms-preview.vercel.app`.
