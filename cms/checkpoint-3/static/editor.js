@@ -39,7 +39,6 @@
   });
   $('#publish').addEventListener('click',async()=>{
     if(busy||dirty()||!record.has_changes)return;
-    if(!confirm('Publish this saved draft to the local fintech page? Production will not change.'))return;
     busy=true;render();
     try {record=await api('/api/versions/'+slug+'/publish',{revision:record.revision});message('Published locally. The same link now shows the saved content; no deployment occurred.');}
     catch(error){message(error.message);}finally{busy=false;render();}
