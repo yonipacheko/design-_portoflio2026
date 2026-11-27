@@ -32,6 +32,8 @@ def _github(path, method='GET', body=None):
 
 
 def _put(path, content, message):
+    if isinstance(content, str):
+        content = content.encode()
     sha = None
     try:
         sha = _github(path).get('sha')
