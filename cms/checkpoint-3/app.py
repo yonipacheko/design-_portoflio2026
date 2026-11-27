@@ -19,6 +19,7 @@ from starlette.staticfiles import StaticFiles
 
 from store import Store, Conflict, rendering
 from remote_store import RemoteVersionStore
+from snapshot_sync import sync_published_snapshot
 
 ROOT = Path(__file__).resolve().parent
 ALLOWED_USER = 3479404  # Public GitHub numeric account ID for yonipacheko.
@@ -179,6 +180,10 @@ def create_app(database=None, settings=None):
                 value = store.save(request.path_params['slug'], data['draft'], revision)
             elif request.path_params['action'] == 'publish':
                 value = store.publish(request.path_params['slug'], revision)
+                try:
+                    sync_published_snapshot(value['published'])
+                except Exception:
+                    logging.getLogger('cms.snapshots').exception('Published, but static snapshot sync failed')
             else:
                 raise HTTPException(404)
         except Conflict as e:
