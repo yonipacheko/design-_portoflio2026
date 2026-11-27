@@ -51,7 +51,7 @@ def _put(path, content, message):
 def sync_published_snapshot(content):
     """Write the public HTML and project data for one published version."""
     slug = content['slug']
-    html = rendering.render(content).replace(
+    html = rendering.render(content).decode().replace(
         'Checkpoint 2 · Saved local version · Not published',
         'Fernando Studio · published version',
     )
