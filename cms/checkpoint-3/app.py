@@ -19,6 +19,7 @@ from starlette.staticfiles import StaticFiles
 
 from store import Store, Conflict, rendering
 from remote_store import RemoteVersionStore
+from supabase_client import SupabaseError
 from snapshot_sync import sync_published_snapshot
 
 ROOT = Path(__file__).resolve().parent
@@ -196,14 +197,27 @@ def create_app(database=None, settings=None):
         is_preview = request.url.path.startswith('/admin/preview/')
         if is_preview:
             identity(request)
+        slug = request.path_params['slug']
+        asset = request.path_params.get('asset')
         try:
-            record = store.get(request.path_params['slug'])
+            record = store.get(slug)
+        except SupabaseError:
+            # Public links remain available from the last committed snapshot
+            # when the Supabase free project is paused or temporarily unavailable.
+            if is_preview:
+                raise HTTPException(503, 'The editor is temporarily unavailable')
+            snapshot = ROOT.parent.parent / 'dist' / 'for' / slug / (asset or 'index.html')
+            if snapshot.is_file():
+                if asset == 'projects.js':
+                    return Response(snapshot.read_bytes(), media_type='text/javascript')
+                return HTMLResponse(snapshot.read_text())
+            return HTMLResponse('<h1>This portfolio version is temporarily unavailable.</h1><a href="/">View the general portfolio</a>', 503)
         except KeyError:
             return HTMLResponse('<h1>This portfolio version is unavailable.</h1><a href="/">View the general portfolio</a>', 404)
         if not is_preview and record['status'] != 'live':
             return HTMLResponse('<h1>This portfolio version is unavailable.</h1><a href="/">View the general portfolio</a>', 404)
         content = record['draft' if is_preview else 'published']
-        if request.path_params.get('asset') == 'projects.js':
+        if asset == 'projects.js':
             return Response(rendering.selected_projects(content), media_type='text/javascript')
         html = rendering.render(content).decode().replace('Checkpoint 2 · Saved local version · Not published', 'Fernando Studio · ' + ('draft preview' if is_preview else 'published version'))
         if is_preview:
