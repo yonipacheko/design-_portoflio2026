@@ -35,11 +35,10 @@ window.portfolioProjects = [
     title: "The top-up card",
     category: "Content and interaction design",
     description: "Optimizing clarity of top-up options. The UI issues were real, but the biggest damage came from copy, microcopy, and the lack of a design system.",
-    image: "./assets/project-4.png",
+    image: "./assets/topup-picture-1.png",
     imageAlt: "Mobile top-up and credit option interface",
     imageClass: "project-image-four",
-    caseStudyUrl: "",
-    previewMessage: "Case study coming soon."
+    caseStudyUrl: "./project-04.html"
   },
   {
     number: "05",
